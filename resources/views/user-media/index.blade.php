@@ -81,7 +81,10 @@
                         <div class="flex-1">
                             <label class="block text-sm font-medium text-gray-700 mb-2">CSV File</label>
                             <input type="file" name="csv_file" accept=".csv" required class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-                            <p class="mt-1 text-xs text-gray-500">Format: title,type,description,release_year,visibility</p>
+                            <p class="mt-1 text-xs text-gray-500">
+                                Format: title,type,description,release_year,visibility
+                                <a href="{{ asset('sample.csv') }}" download class="text-blue-600 hover:text-blue-900 ml-2">Download sample CSV</a>
+                            </p>
                         </div>
                         <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                             Import
