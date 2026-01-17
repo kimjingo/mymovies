@@ -16,6 +16,7 @@
 /public/build
 /public/hot
 /public/storage
+/public/deploy-log.txt
 !/public/sample.csv
 /storage
 /vendor
