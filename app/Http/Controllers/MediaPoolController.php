@@ -17,7 +17,16 @@ class MediaPoolController extends Controller
 
         $media = MediaPool::search($query)
             ->limit(10)
-            ->get(['id', 'title', 'type', 'release_year']);
+            ->get(['id', 'title', 'type', 'release_year', 'description'])
+            ->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'title' => $item->title,
+                    'type' => $item->type->value,
+                    'release_year' => $item->release_year,
+                    'description' => $item->description,
+                ];
+            });
 
         return response()->json($media);
     }
