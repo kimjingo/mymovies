@@ -12,7 +12,7 @@
             @endauth
         </div>
 
-        <div class="py-6">
+        <div class="py-1">
             <div class="mb-6">
                 <h1 class="text-3xl font-bold text-gray-900">Discover Movies & TV Shows</h1>
                 <p class="mt-2 text-gray-600">See what people are sharing</p>
@@ -34,7 +34,7 @@
             @else
                 <div class="space-y-4">
                     @foreach($publicMedia as $userMedia)
-                        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                        <div class="bg-white overflow-hidden shadow-sm sm:rounded-xl p-6 mx-2">
                             <h3 class="text-xl font-semibold text-gray-900">{{ $userMedia->mediaPool->title }}</h3>
                             <p class="text-sm text-gray-600 mt-1">
                                 {{ $userMedia->mediaPool->type_name }}

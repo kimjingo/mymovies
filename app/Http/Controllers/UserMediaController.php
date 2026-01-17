@@ -61,18 +61,18 @@ class UserMediaController extends Controller
             ->with('success', 'Media added successfully!');
     }
 
-    public function edit(UserMedia $userMedia)
+    public function edit(UserMedia $user_medium)
     {
-        if ($userMedia->user_id !== Auth::id()) {
+        if ($user_medium->user_id !== Auth::id()) {
             abort(403);
         }
 
-        return view('user-media.edit', compact('userMedia'));
+        return view('user-media.edit', ['userMedia' => $user_medium]);
     }
 
-    public function update(Request $request, UserMedia $userMedia)
+    public function update(Request $request, UserMedia $user_medium)
     {
-        if ($userMedia->user_id !== Auth::id()) {
+        if ($user_medium->user_id !== Auth::id()) {
             abort(403);
         }
 
@@ -80,7 +80,7 @@ class UserMediaController extends Controller
             'visibility' => 'required|in:private,public',
         ]);
 
-        $userMedia->update([
+        $user_medium->update([
             'visibility' => $request->visibility,
         ]);
 
@@ -88,13 +88,13 @@ class UserMediaController extends Controller
             ->with('success', 'Visibility updated successfully!');
     }
 
-    public function destroy(UserMedia $userMedia)
+    public function destroy(UserMedia $user_medium)
     {
-        if ($userMedia->user_id !== Auth::id()) {
+        if ($user_medium->user_id !== Auth::id()) {
             abort(403);
         }
 
-        $userMedia->delete();
+        $user_medium->delete();
 
         return redirect()->route('user-media.index')
             ->with('success', 'Media removed successfully!');
