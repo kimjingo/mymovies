@@ -15,7 +15,7 @@
                     <x-nav-link :href="route('home')" :active="request()->routeIs('home')">
                         {{ __('Home') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard') || request()->routeIs('user-media.*')">
+                    <x-nav-link :href="route('dashboard')" :active="(request()->routeIs('dashboard') || request()->routeIs('user-media.*')) && !request()->routeIs('user-media.liked')">
                         {{ __('My Media') }}
                     </x-nav-link>
                     <x-nav-link :href="route('user-media.liked')" :active="request()->routeIs('user-media.liked')">
@@ -79,7 +79,7 @@
             <x-responsive-nav-link :href="route('home')" :active="request()->routeIs('home')">
                 {{ __('Home') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard') || request()->routeIs('user-media.*')">
+            <x-responsive-nav-link :href="route('dashboard')" :active="(request()->routeIs('dashboard') || request()->routeIs('user-media.*')) && !request()->routeIs('user-media.liked')">
                 {{ __('My Media') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('user-media.liked')" :active="request()->routeIs('user-media.liked')">
