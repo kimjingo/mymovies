@@ -47,6 +47,7 @@ class UserMediaController extends Controller
                     'type' => MediaType::from((int)$request->type),
                     'description' => $request->description,
                     'release_year' => $request->release_year,
+                    'created_by' => Auth::id(),
                 ]);
             }
 
@@ -67,7 +68,14 @@ class UserMediaController extends Controller
             abort(403);
         }
 
-        return view('user-media.edit', ['userMedia' => $user_medium]);
+        $canEditMediaPool = $user_medium->mediaPool->canBeEditedBy(Auth::id());
+        $typeOptions = MediaType::options();
+
+        return view('user-media.edit', [
+            'userMedia' => $user_medium,
+            'canEditMediaPool' => $canEditMediaPool,
+            'typeOptions' => $typeOptions,
+        ]);
     }
 
     public function update(Request $request, UserMedia $user_medium)
@@ -76,16 +84,41 @@ class UserMediaController extends Controller
             abort(403);
         }
 
-        $request->validate([
+        $validationRules = [
             'visibility' => 'required|in:private,public',
-        ]);
+        ];
 
-        $user_medium->update([
-            'visibility' => $request->visibility,
-        ]);
+        $canEditMediaPool = $user_medium->mediaPool->canBeEditedBy(Auth::id());
+
+        // If user can edit media pool, add validation rules for media pool fields
+        if ($canEditMediaPool) {
+            $validationRules['title'] = 'required|string|max:255';
+            $validationRules['type'] = 'required|in:1,2';
+            $validationRules['description'] = 'nullable|string';
+            $validationRules['release_year'] = 'nullable|integer|min:1800|max:' . (date('Y') + 10);
+        }
+
+        $request->validate($validationRules);
+
+        DB::transaction(function () use ($request, $user_medium, $canEditMediaPool) {
+            // Update visibility
+            $user_medium->update([
+                'visibility' => $request->visibility,
+            ]);
+
+            // Update media pool if allowed
+            if ($canEditMediaPool) {
+                $user_medium->mediaPool->update([
+                    'title' => $request->title,
+                    'type' => MediaType::from((int)$request->type),
+                    'description' => $request->description,
+                    'release_year' => $request->release_year,
+                ]);
+            }
+        });
 
         return redirect()->route('user-media.index')
-            ->with('success', 'Visibility updated successfully!');
+            ->with('success', 'Media updated successfully!');
     }
 
     public function destroy(UserMedia $user_medium)
@@ -164,6 +197,7 @@ class UserMediaController extends Controller
                         [
                             'description' => $description,
                             'release_year' => $releaseYear ? (int)$releaseYear : null,
+                            'created_by' => Auth::id(),
                         ]
                     );
 

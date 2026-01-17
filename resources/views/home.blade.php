@@ -47,14 +47,23 @@
                             @endif
                             <div class="mt-4 flex items-center justify-between">
                                 <span class="text-sm text-gray-500">Shared by {{ $userMedia->user->name }}</span>
-                                @auth
-                                    <button onclick="toggleLike({{ $userMedia->id }})" id="like-btn-{{ $userMedia->id }}" class="flex items-center gap-1 {{ in_array($userMedia->id, $userLikes) ? 'text-red-500' : 'text-gray-500' }} hover:text-red-500">
-                                        <span id="like-icon-{{ $userMedia->id }}">{{ in_array($userMedia->id, $userLikes) ? '❤️' : '🤍' }}</span>
-                                        <span id="likes-count-{{ $userMedia->id }}">{{ $userMedia->likes_count }}</span>
-                                    </button>
-                                @else
-                                    <span class="text-gray-500">🤍 {{ $userMedia->likes_count }}</span>
-                                @endauth
+                                <div class="flex items-center gap-3">
+                                    @auth
+                                        @if(in_array($userMedia->id, $editableMedia))
+                                            <a href="{{ route('user-media.edit', $userMedia) }}" class="text-blue-600 hover:text-blue-800" title="Edit this media">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                                                </svg>
+                                            </a>
+                                        @endif
+                                        <button onclick="toggleLike({{ $userMedia->id }})" id="like-btn-{{ $userMedia->id }}" class="flex items-center gap-1 {{ in_array($userMedia->id, $userLikes) ? 'text-red-500' : 'text-gray-500' }} hover:text-red-500">
+                                            <span id="like-icon-{{ $userMedia->id }}">{{ in_array($userMedia->id, $userLikes) ? '❤️' : '🤍' }}</span>
+                                            <span id="likes-count-{{ $userMedia->id }}">{{ $userMedia->likes_count }}</span>
+                                        </button>
+                                    @else
+                                        <span class="text-gray-500">🤍 {{ $userMedia->likes_count }}</span>
+                                    @endauth
+                                </div>
                             </div>
                         </div>
                     @endforeach

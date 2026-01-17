@@ -15,6 +15,7 @@ class MediaPool extends Model
         'description',
         'release_year',
         'poster_url',
+        'created_by',
     ];
 
     protected $casts = [
@@ -24,6 +25,11 @@ class MediaPool extends Model
     public function userMedia()
     {
         return $this->hasMany(UserMedia::class);
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
     }
 
     public function scopeSearch($query, $term)
@@ -44,5 +50,38 @@ class MediaPool extends Model
     public function getTypeNameAttribute(): string
     {
         return $this->type->label();
+    }
+
+    /**
+     * Check if the media pool can be edited by the given user.
+     * Can be edited only if:
+     * - Created by the user
+     * - Not used by any other user
+     * - Has no likes
+     */
+    public function canBeEditedBy($userId): bool
+    {
+        // Check if created by the user
+        if ($this->created_by !== $userId) {
+            return false;
+        }
+
+        // Check if used by other users (more than one user_media entry or the single entry is not by this user)
+        $userMediaCount = $this->userMedia()->count();
+        if ($userMediaCount > 1) {
+            return false;
+        }
+
+        if ($userMediaCount === 1 && $this->userMedia()->where('user_id', '!=', $userId)->exists()) {
+            return false;
+        }
+
+        // Check if has any likes
+        $hasLikes = $this->userMedia()->whereHas('likes')->exists();
+        if ($hasLikes) {
+            return false;
+        }
+
+        return true;
     }
 }

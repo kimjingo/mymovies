@@ -26,10 +26,19 @@ class HomeController extends Controller
 
         if (Auth::check()) {
             $userLikes = Auth::user()->likedMedia->pluck('id')->toArray();
+
+            // Check which media can be edited by the current user
+            $editableMedia = [];
+            foreach ($publicMedia as $userMedia) {
+                if ($userMedia->mediaPool->canBeEditedBy(Auth::id())) {
+                    $editableMedia[] = $userMedia->id;
+                }
+            }
         } else {
             $userLikes = [];
+            $editableMedia = [];
         }
 
-        return view('home', compact('publicMedia', 'userLikes'));
+        return view('home', compact('publicMedia', 'userLikes', 'editableMedia'));
     }
 }
