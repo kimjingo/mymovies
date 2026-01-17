@@ -30,7 +30,11 @@
 
                         @if($canEditMediaPool)
                             <div class="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-md">
-                                <p class="text-sm text-blue-800">You can edit this media's details because you created it, it's not used by others, and has no likes.</p>
+                                @if($userMedia->mediaPool->created_by === null)
+                                    <p class="text-sm text-blue-800">This media has no creator yet. You can edit and claim ownership of it (as long as it's not used by others and has no likes).</p>
+                                @else
+                                    <p class="text-sm text-blue-800">You can edit this media's details because you created it, it's not used by others, and has no likes.</p>
+                                @endif
                             </div>
 
                             <div class="mb-4">

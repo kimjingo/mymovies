@@ -108,12 +108,19 @@ class UserMediaController extends Controller
 
             // Update media pool if allowed
             if ($canEditMediaPool) {
-                $user_medium->mediaPool->update([
+                $updateData = [
                     'title' => $request->title,
                     'type' => MediaType::from((int)$request->type),
                     'description' => $request->description,
                     'release_year' => $request->release_year,
-                ]);
+                ];
+
+                // If created_by is NULL, set it to the current user (claiming ownership)
+                if ($user_medium->mediaPool->created_by === null) {
+                    $updateData['created_by'] = Auth::id();
+                }
+
+                $user_medium->mediaPool->update($updateData);
             }
         });
 
